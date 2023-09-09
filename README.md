@@ -2,7 +2,7 @@
 Count keyword occurence in the given text
 
 This script takes as its input two addresses two TXT files: keyword.txt and text.txt. 
-The keywords.txt is a set of keywords. Each keyword is placed on a new line. Multiple-word keywords are supported.
+The keywords.txt is a set of keywords. Each keyword is placed on a new line. Multiple-word keywords are not supported.
 
 The text.txt is a text to be checked for the keyword occurrence.
 
