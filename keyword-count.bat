@@ -1,6 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
+
 :check_keyword_file
 if not exist "keyword.txt" (
     set /p keyword_file=Enter the address of keyword.txt: 
@@ -40,6 +41,7 @@ for /f "delims=" %%k in (!keyword_file!) do (
     call :FindKeyword
 )
 
+
 echo ---------------------------
 echo:
 pause
@@ -47,10 +49,12 @@ exit /b
 
 :FindKeyword
 set "count=0"
-for /f %%a in ('echo "!string!" ^| findstr /i /c:"!keyword!"') do (
-    set /a "count+=1"
+for %%a in (!string!) do (
+    if "%%a"=="!keyword!" (
+        set /a "count+=1"
+    )
 )
 if %count% gtr 0 (
-    echo "!keyword! ---> %count% times in text"
+    echo "Keyword: !keyword! - Count: %count%"
 )
 exit /b
