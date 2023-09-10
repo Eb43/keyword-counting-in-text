@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Keyword Search</title>
+</head>
+<body>
+    <h1>Keyword Search</h1>
+    <label for="keywordFile">Keyword File (keyword.txt): </label>
+    <input type="file" id="keywordFile" accept=".txt"><br>
+
+    <label for="textFile">Text File (text.txt): </label>
+    <input type="file" id="textFile" accept=".txt"><br>
+
+    <button onclick="performSearch()">Search</button>
+
+    <div id="results"></div>
+
+    <script>
+        function performSearch() {
+            const keywordFileInput = document.getElementById("keywordFile");
+            const textFileInput = document.getElementById("textFile");
+            const resultsDiv = document.getElementById("results");
+
+            const keywordFile = keywordFileInput.files[0];
+            const textFile = textFileInput.files[0];
+
+            if (!keywordFile || !textFile) {
+                resultsDiv.innerHTML = "Please select both keyword.txt and text.txt files.";
+                return;
+            }
+
+            const keywordReader = new FileReader();
+            keywordReader.onload = function (e) {
+                const keywords = e.target.result.split("\n").map(keyword => keyword.trim()).filter(Boolean);
+
+                const textReader = new FileReader();
+                textReader.onload = function (e) {
+                    const text = e.target.result;
+
+                    function searchAndCountKeyword(keyword, text) {
+                        const lines = text.split("\n");
+                        let count = 0;
+
+                        const keywordRegex = new RegExp(`\\b${keyword}\\b`, 'gi');
+
+                        for (const line of lines) {
+                            const matches = line.match(keywordRegex);
+                            if (matches) {
+                                // resultsDiv.innerHTML += line + "<br>";  //Displays the line where the keyword was found
+                                count += matches.length;
+                            }
+                        }
+
+                        return count;
+                    }
+
+                    let totalKeywordCount = 0;
+
+                    function processKeywords(index) {
+                        if (index >= keywords.length) {
+                            resultsDiv.innerHTML += `<button onclick="location.reload()">Restart Search</button>`;
+                            return;
+                        }
+
+                        const keyword = keywords[index];
+
+                        // resultsDiv.innerHTML += `<h2>Searching for '${keyword}'</h2>`; // Visually separates the output of each new keyword
+                        const count = searchAndCountKeyword(keyword, text);
+                        resultsDiv.innerHTML += `<h3><b>'${keyword}'</b> ---> <b>${count}</b> times found<br>`;
+
+                        //totalKeywordCount += count;
+
+                        // Continue to the next keyword
+                        processKeywords(index + 1);
+                    }
+
+                    processKeywords(0);
+                };
+
+                textReader.readAsText(textFile);
+            };
+
+            keywordReader.readAsText(keywordFile);
+        }
+    </script>
+</body>
+</html>
